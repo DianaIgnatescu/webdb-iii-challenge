@@ -84,3 +84,19 @@ server.put('/api/cohorts/:id', (req, res) => {
         });
   }
 });
+
+server.delete('/api/cohorts/:id', (req, res) => {
+  const { id } = req.params;
+  db('cohorts')
+      .where({ id: id })
+      .del()
+      .then(count => {
+        res.status(200).json({ message: `${count} item removed from the database.` });
+      })
+      .catch((error) => {
+        res.status(500).json({ error: "The cohort record could not be deleted." });
+      });
+});
+
+const port = 5000;
+server.listen(port, () => console.log(`Listening on http://localhost:${port}`));
