@@ -25,3 +25,13 @@ server.post('/api/cohorts', (req, res) => {
         });
   }
 });
+
+server.get('/api/cohorts', (req, res) => {
+  db('cohorts')
+      .then((cohorts) => {
+        res.status(200).json(cohorts);
+      })
+      .catch((error) => {
+        res.status(500).json({ errorMessage: 'The cohorts could not be retrieved.' });
+      })
+});
