@@ -65,3 +65,22 @@ server.get('/api/cohorts/:id/students', (req, res) => {
         res.status(500).json({ errorMessage: 'The students from the specified cohort could not be retrieved.' })
       })
 })
+
+server.put('/api/cohorts/:id', (req, res) => {
+  const { id } = req.params;
+  const cohort = req.body;
+  if (!cohort) {
+    res.status(400).json({ errorMessage: 'Please provide a name for the cohort.' });
+  } else {
+    db('cohorts')
+        .where({ id: id })
+        .update(cohort)
+        .then(() => {
+          return db('cohorts').where({id: id }).first();
+        })
+        .then( record => res.status(200).json(record))
+        .catch(error => {
+          res.status(500).json({ errorMessage: 'The cohort information could not be modified.' })
+        });
+  }
+});
