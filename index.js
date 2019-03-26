@@ -51,3 +51,17 @@ server.get('/api/cohorts/:id', (req, res) => {
         res.status(500).json({ error: 'The cohort information could not be retrieved.' });
       });
 });
+
+server.get('/api/cohorts/:id/students', (req, res) => {
+  const { id } = req.params;
+  db('students')
+      .join('cohorts', { 'students.cohort_id': 'cohorts.id' })
+      .select('students.id', 'students.name', 'cohorts.name as cohort')
+      .where({ cohort_id: id})
+      .then((students) => {
+        res.status(200).json({ students});
+      })
+      .catch((error) => {
+        res.status(500).json({ errorMessage: 'The students from the specified cohort could not be retrieved.' })
+      })
+})
