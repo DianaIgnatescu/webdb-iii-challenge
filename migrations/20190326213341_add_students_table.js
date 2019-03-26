@@ -8,8 +8,9 @@ exports.up = function(knex, Promise) {
         .unique();
     tbl
         .integer('cohort_id')
+        .unsigned()
         .references('id')
-        .inTable('cohorts')
+        .inTable('cohorts');
   });
 };
 
