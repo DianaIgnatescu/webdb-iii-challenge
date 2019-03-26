@@ -35,3 +35,19 @@ server.get('/api/cohorts', (req, res) => {
         res.status(500).json({ errorMessage: 'The cohorts could not be retrieved.' });
       })
 });
+
+server.get('/api/cohorts/:id', (req, res) => {
+  const {id} = req.params;
+  db('cohorts')
+      .where({ id: id })
+      .then((cohort) => {
+        if(!cohort) {
+          res.status(404).json({ message: 'The cohort with the specified ID does not exist.' });
+        } else {
+          res.status(200).json(cohort)
+        }
+      })
+      .catch((error) => {
+        res.status(500).json({ error: 'The cohort information could not be retrieved.' });
+      });
+});
