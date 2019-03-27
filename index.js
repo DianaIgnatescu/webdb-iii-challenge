@@ -64,7 +64,7 @@ server.get('/api/cohorts/:id/students', (req, res) => {
       .catch((error) => {
         res.status(500).json({ errorMessage: 'The students from the specified cohort could not be retrieved.' })
       })
-})
+});
 
 server.put('/api/cohorts/:id', (req, res) => {
   const { id } = req.params;
@@ -97,6 +97,36 @@ server.delete('/api/cohorts/:id', (req, res) => {
         res.status(500).json({ error: "The cohort record could not be deleted." });
       });
 });
+
+server.post('/api/students', (req, res) => {
+  const { name, cohort_id } = req.body;
+  if (!name || !cohort_id) {
+    res.status(400).json({ errorMessage: 'Please provide a name and cohort_id for the student.' });
+  } else {
+    db('students').insert({ name, cohort_id })
+        .then(arrayOfIds => {
+          return db('students').where({ id: arrayOfIds[0] })
+        })
+        .then(arrayOfStudents => {
+          res.status(201).json(arrayOfStudents[0]);
+        })
+        .catch(error => {
+          res.status(500).json({ errorMessage: 'The student record could not be created. '});
+        });
+  }
+});
+
+server.get('/api/students', (req, res) => {
+  db('students')
+      .then((students) => {
+        res.status(200).json(students);
+      })
+      .catch((error) => {
+        res.status(500).json({ errorMessage: 'The students could not be retrieved.' });
+      })
+});
+
+
 
 const port = 5000;
 server.listen(port, () => console.log(`Listening on http://localhost:${port}`));
